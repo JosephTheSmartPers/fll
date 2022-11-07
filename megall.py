@@ -23,27 +23,30 @@ def stop():
     leftm.stop()
     rightm.stop()  
 
-def raall(sensi, maxs, maxspd):
+def raall(sensi, maxs, maxspd, minlight):
     maxms = float(maxs)
     now = time.time()
     print(time.time)
     leftPrev = 100
     rightPrev = 100
     perfect = False
+
+    
+    seconds = time.time() - now
     while perfect != True:
-        leftSpd = (6 - bs.reflected_light_intensity) * sensi
-        rightSpd = (6 - rs.reflected_light_intensity) * sensi
+        seconds = time.time() - now
+
+        leftSpd = (minlight - bs.reflected_light_intensity) * sensi * (2 - seconds)
+        rightSpd = (minlight - rs.reflected_light_intensity) * sensi * (2 - seconds)
         if(abs(leftSpd) > maxspd):
             leftSpd = maxspd * (leftSpd / abs(leftSpd))
         if(abs(rightSpd) > maxspd):
             rightSpd = maxspd * (rightSpd / abs(rightSpd))
         leftm.on(leftSpd)
         rightm.on(rightSpd)
-        leftPrev = bs.reflected_light_intensity
-        rightPrev = bs.reflected_light_intensity
-        print(str(8 - bs.reflected_light_intensity))
+        print(str(minlight - bs.reflected_light_intensity))
         print(time.time())
-        if(time.time() - now >= maxs):
+        if(seconds >= maxs):
             m.stop
             perfect = True 
             leftm.stop()
@@ -57,8 +60,4 @@ while go == True:
             if(bs.reflected_light_intensity <= 8 or rs.reflected_light_intensity <= 8):
                 m.stop()
                 go = False
-                raall(1, 10, 10)
-
-        
-    
-
+                raall(2.45, 2, 15, 7)

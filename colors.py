@@ -1,24 +1,23 @@
+from ev3dev2.sensor.lego import * 
+from ev3dev2.sensor import *
 from ev3dev2.motor import *
-from ev3dev2.sensor.lego import GyroSensor, ColorSensor 
-from time import sleep
-import math
+leftm = LargeMotor(OUTPUT_B)
+rightm = LargeMotor(OUTPUT_C)
 
-gs = GyroSensor()
-cs = ColorSensor()
 
-gs.reset()
+m = MoveTank(OUTPUT_B, OUTPUT_C)
+s = MoveSteering(OUTPUT_B, OUTPUT_C)
+gs = GyroSensor(INPUT_2)
+rs = ColorSensor("in3")
+bs = ColorSensor("in4")
 
-cs = ColorSensor()
-m1 = LargeMotor("outA")
-m2 = LargeMotor("outD")
-tank = MoveTank("outA", "outD")
-tanki = MoveSteering("outA", "outD")
-karle = MediumMotor("outB")
-karjx = MediumMotor("outC")
+bs.MODE_COL_REFLECT = "COL-REFLECT"
+rs.MODE_COL_REFLECT = "COL-REFLECT"
 
-print("Kész vagyok")
 while True:
-    if(cs.color == "5" or cs.color == 5):
-        tank.on_for_rotations(75, 75, 1)
-    elif(cs.color == "3" or cs.color == 3):
-        
+    print("______________________")
+    print(" ")
+    print("Jobb = " + str(rs.reflected_light_intensity))
+    print("Ball = " + str(bs.reflected_light_intensity))
+    print(" ")
+    time.sleep(1)
