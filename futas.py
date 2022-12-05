@@ -1,6 +1,7 @@
 from ev3dev2.sensor.lego import * 
 from ev3dev2.sensor import *
 from ev3dev2.motor import *
+from straight import *
 leftm = LargeMotor(OUTPUT_B)
 rightm = LargeMotor(OUTPUT_C)
 hand = MediumMotor(OUTPUT_A)
@@ -62,13 +63,8 @@ def followLine(sensitivity, distance, maxSpeed, goodLight, sensor = False, strai
                 m.stop() 
 ########################################################################################################
 
-followLine(0.8, 3, 20 , 40, ls, True)
-hand.on_for_rotations(70, 0.4, False, False)
-m.on_for_rotations(-20, -20, 0.6)
-hand.on_for_rotations(-70, 0.4, False, False)
-m.on_for_rotations(-20, -20, 0.2)
-turn(90, 45, 0.4, 1)
-
-
-
-
+gs.reset()
+hand.on_for_rotations(50, 1)
+straight(2.8, 45, int(gs.angle) + 1.73, 2, 20)
+hand.on_for_rotations(30, -1)
+straight(2.8, 45, int(gs.angle), 2, 20)

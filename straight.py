@@ -87,7 +87,3 @@ def straight(rot, maxspeed, dir, p, minspeed, stopOnLine = False, coorigate = Fa
         print(spd)
         s.on(angle, spd)
     m.stop()
-
-straight(10, -45, int(gs.angle), 2, 20)
-
-
