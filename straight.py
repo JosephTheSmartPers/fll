@@ -7,18 +7,65 @@ rightm = LargeMotor(OUTPUT_C)
 
 m = MoveTank(OUTPUT_B, OUTPUT_C)
 s = MoveSteering(OUTPUT_B, OUTPUT_C)
-gs = GyroSensor("in2")
+gs = GyroSensor(INPUT_2)
+rs = ColorSensor("in3")
+bs = ColorSensor("in4")
+
+bs.MODE_COL_REFLECT = "COL-REFLECT"
+rs.MODE_COL_REFLECT = "COL-REFLECT"
+
+def rotations():
+    return leftm.rotations + rightm.rotations / 2
 
 
+def stop():
+    m.stop
+    leftm.stop()
+    rightm.stop()
+    perfect = True  
 
-def straight(rot, maxspeed, dir, speedup, slowdown, p, minspeed):
+def raall(sensi, maxs, maxspd, minlight):
+    now = time.time()
+    print(time.time)
+    perfect = False
+    
+    seconds = time.time() - now
+    while perfect != True:
+        seconds = time.time() - now
+
+        leftSpd = (minlight - bs.reflected_light_intensity) * sensi * (2 - seconds)
+        rightSpd = (minlight - rs.reflected_light_intensity) * sensi * (2 - seconds)
+        if(abs(leftSpd) > maxspd):
+            leftSpd = maxspd * (leftSpd / abs(leftSpd))
+        if(abs(rightSpd) > maxspd):
+            rightSpd = maxspd * (rightSpd / abs(rightSpd))
+        leftm.on(leftSpd)
+        rightm.on(rightSpd)
+
+        if(seconds >= maxs):
+            stop()
+            perfect = True
+        if(leftSpd == 0 and rightSpd == 0):
+            stop()
+            perfect = True
+
+def straight(rot, maxspeed, dir, p, minspeed, stopOnLine = False, coorigate = False):
+    speedup = rot * 0.2
+    slowdown = rot * 0.8
     if(maxspeed < 0):   
         minspeed = minspeed * -1
     print(rotations())
-    ##if(maxspeed < 0):
-        ##speedup *= -1
-        ##slowdown *= -1
-    while abs(rotations()) <= rot:
+    stopNow = False
+
+    while abs(rotations()) <= rot and stopNow == False:
+        if(stopOnLine == True):
+            if(bs.reflected_light_intensity <= 10 or rs.reflected_light_intensity <= 10):
+                if(coorigate == True):
+                    raall(2.45, 1, 15, 6)
+                m.stop()
+                stopNow = True
+                return
+
         if(abs(rotations()) < speedup):
             print("speeding up")
             spd = (abs(rotations()) / speedup * (maxspeed - minspeed)) + minspeed
@@ -40,13 +87,7 @@ def straight(rot, maxspeed, dir, speedup, slowdown, p, minspeed):
         print(spd)
         s.on(angle, spd)
     m.stop()
-def rotations():
-    return leftm.rotations + rightm.rotations / 2
-print(rotations())
-gs.reset()
-print(gs.angle)
-#straight(3, 75, int(gs.angle), 2, 2, 2, 20)
-leftm.reset()
-rightm.reset()
-print("aaaaaaaaaaaaaaa")
-straight(3, -75, int(gs.angle), 1, 1.5, 2, 20)
+
+straight(10, -45, int(gs.angle), 2, 20)
+
+

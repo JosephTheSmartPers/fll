@@ -1,10 +1,10 @@
-from ev3dev2.motor import OUTPUT_A, OUTPUT_D, MoveTank
+from ev3dev2.motor import OUTPUT_B, OUTPUT_C, MoveTank
 from ev3dev2.sensor.lego import ColorSensor, GyroSensor
 from ev3dev2.sound import Sound
 from ev3dev2.sensor import *
-gs = GyroSensor("in4")
+gs = GyroSensor("in2")
 spkr = Sound()
-m = MoveTank(OUTPUT_A, OUTPUT_D)
+m = MoveTank(OUTPUT_B, OUTPUT_C)
 gs.MODE_GYRO_ANG = 'GYRO-ANG'
 gs.reset()
 def turn(degree, speed, acceleration, time):
@@ -22,5 +22,5 @@ def turn(degree, speed, acceleration, time):
     m.stop()
     normal = gs.angle
   
-turn(-90, 50, 0.75)
+turn(-90, 50, 0.4, 1)
 """300 *100"""
