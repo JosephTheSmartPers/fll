@@ -23,20 +23,21 @@ def calcDegree(lightIntensity, goodLight, sensitivity, maxSpeed):
         if(abs(spd) > maxSpeed):
             spd = maxSpeed * (spd / abs(spd))
 
-        return(spd)
-        
+        return(spd)     
 
-def followLine(sensitivity, distance, maxspeed, goodLight, sensor):
-    startRotation = getRotations()
-    while startRotation + distance > getRotations():
-        s.on(calcDegree(ls.reflected_light_intensity, goodLight, sensitivity, maxspeed), maxspeed)
-    m.stop()
+def followLine(sensitivity, distance, maxSpeed, goodLight, sensor = False, straight = False):
+        m.on(20,20)
+        while straight == True:
+            if(ls.reflected_light_intensity < 60):
+                straight = False
+                startRotation = getRotations()
+                while startRotation + distance > getRotations():
+                    if(sensor != False):
+                        s.on(calcDegree(sensor.reflected_light_intensity, goodLight, sensitivity, maxSpeed), maxSpeed)
+                    else:
+                        leftm.on(maxSpeed-calcDegree(ls.reflected_light_intensity, goodLight, sensitivity, maxSpeed))
+                        rightm.on(maxSpeed-calcDegree(rs.reflected_light_intensity, goodLight, sensitivity, maxSpeed))
+                m.stop() 
 
-m.on(20,20)
-straight = True
-while straight == True:
-    if(ls.reflected_light_intensity < 60):
-        followLine(0.8, 3, 20 , 40, "left")
-        straight = False
 
 
