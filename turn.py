@@ -10,8 +10,9 @@ m = MoveTank(OUTPUT_B, OUTPUT_C)
 gs.MODE_GYRO_ANG = 'GYRO-ANG'
 gs.reset()
 
-def turn(degree, speed, acceleration, maxTime, margin = 2):
-    print("started turning...")
+def turn(degree, speed, acceleration, maxTime, margin = 2, timeout = 3):
+    print("turning")
+    startTime = time.time()
     now = 999999999999
     global normal
     rldegree = degree * -1
@@ -19,6 +20,8 @@ def turn(degree, speed, acceleration, maxTime, margin = 2):
     seconds = time.time() - now
     go = True
     while gs.angle != rotation - rldegree and go == True:
+        if(startTime + timeout <= time.time()):
+            break
         seconds = time.time() - now
 
         if(((rotation - rldegree) - margin <= gs.angle <= (rotation - rldegree)  + margin)):
@@ -38,5 +41,6 @@ def turn(degree, speed, acceleration, maxTime, margin = 2):
         print(spd)
     m.stop()
     normal = gs.angle
+    gs.reset()
   
-#turn(50, 70, 0.7, 2)
+##turn(50, 70, 0.7, 2)

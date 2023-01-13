@@ -37,6 +37,7 @@ def raall(sensi, maxs, maxspd, minlight):
 
         leftSpd = (minlight - bs.reflected_light_intensity) * sensi * (2 - seconds)
         rightSpd = (minlight - rs.reflected_light_intensity) * sensi * (2 - seconds)
+        
         if(abs(leftSpd) > maxspd):
             leftSpd = maxspd * (leftSpd / abs(leftSpd))
         if(abs(rightSpd) > maxspd):
@@ -52,45 +53,45 @@ def raall(sensi, maxs, maxspd, minlight):
             perfect = True
 
 def straight(rot, maxspeed, dir, p, minspeed, stopOnLine = False, coorigate = False):
-    speedup = rot * 0.5
-    slowdown = rot * 0.6
-    if(maxspeed < 0):   
-        minspeed = minspeed * -1
-    print(rotations())
-    stopNow = False
 
-    while abs(rotations()) <= rot and stopNow == False:
+    if(maxspeed  < 0):
+        rot = rot * -1
+
+    rot = rot + rotations()
+    if(maxspeed < 0):
+        minspeed = minspeed * -1
+    stopNow = False
+    speedup = rot * 0.5
+
+    slowdown = rot * 0.6
+
+    while rotations() < rot and stopNow == False:
         if(stopOnLine == True):
             if(bs.reflected_light_intensity <= 8 or rs.reflected_light_intensity <= 8):
                 if(coorigate == True):
-                    raall(1.75, 0.7, 15, 6)
+                    raall(2, 1, 15, 6)
                 m.stop()
                 stopNow = True
                 return
 
-        if(abs(rotations()) < speedup):
+        if(rotations() < speedup):
             print("speeding up")
-            spd = (abs(rotations()) / speedup * (maxspeed - minspeed)) + minspeed
-        elif(abs(rotations()) > slowdown):
+            spd = (rotations() / speedup * (maxspeed - minspeed)) + minspeed
+            print(rotations())
+        elif(rotations() > slowdown):
             print("slowing down")
-            spd = maxspeed - ((abs(rotations()) - (rot - slowdown)) / slowdown * maxspeed) + minspeed
+            print(rotations())
+            spd = maxspeed - rotations() - ((rot - slowdown) / slowdown * maxspeed) + minspeed
         else:
             print("going normal speed")
             spd = maxspeed
-        if spd > 100:
-            spd = 100
+            
+        if(abs(spd) > maxspeed): spd = (abs(spd) / spd) * maxspeed
         angle = (dir - (gs.angle * -1)) * p
-        if(maxspeed < 0):
-            angle = angle * -1
-        if(angle > 100):
-            angle = 100
-        elif(angle < - 100):
-            angle = -100
-        print(spd)
+        if(abs(angle) > maxspeed): angle = (abs(angle) / angle) * maxspeed
+        if(maxspeed < -1):
+            angle *= -1
         s.on(angle, spd)
     m.stop()
-    time.sleep(0.2)
-    leftm.reset()
-    rightm.reset()
-#straight(2.74, 60, int(gs.angle), 1.5, 20)
+##straight(3, 60, int(gs.angle), 1.5, 20)
 

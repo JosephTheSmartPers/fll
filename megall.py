@@ -113,7 +113,6 @@ print(gs.angle)
 #straight(3, 75, int(gs.angle), 2, 2, 2, 20)
 leftm.reset()
 rightm.reset()
-print("aaaaaaaaaaaaaaa")
-straight(10, 45, int(gs.angle), 2, 20, True, True)
+##straight(10, 45, int(gs.angle), 2, 20, True, True)
 
 

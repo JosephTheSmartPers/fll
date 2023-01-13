@@ -30,18 +30,21 @@ def followLine(sensitivity, distance, maxSpeed, goodLight, sensor = False, strai
         while straight == True:
             if(ls.reflected_light_intensity < 15):
                 straight = False
-                startRotation = getRotations()
-                print("started tracking")
-                while startRotation + distance > getRotations():
-                    if(sensor != False):
-                        s.on(calcDegree(sensor.reflected_light_intensity, goodLight, sensitivity, maxSpeed), maxSpeed)
-                    else:
-                        leftm.on(maxSpeed-calcDegree(ls.reflected_light_intensity, goodLight, sensitivity, maxSpeed))
-                        rightm.on(maxSpeed-calcDegree(rs.reflected_light_intensity, goodLight, sensitivity, maxSpeed))
-                m.stop() 
-                leftm.reset()
-                rightm.reset()
-                return "done"
+                return
+        m.stop()
+        distance += getRotations()
+        print("started tracking")
+        while distance > getRotations():
+            print('tracking')
+            if(sensor != False):
+                s.on(calcDegree(sensor.reflected_light_intensity, goodLight, sensitivity, maxSpeed), maxSpeed)
+            else:
+                leftm.on(maxSpeed-calcDegree(ls.reflected_light_intensity, goodLight, sensitivity, maxSpeed))
+                rightm.on(maxSpeed-calcDegree(rs.reflected_light_intensity, goodLight, sensitivity, maxSpeed))
+        m.stop() 
+        leftm.reset()
+        rightm.reset()
+        return "done"
 
-#print(followLine(0.9, 2.9, 25, 20, ls, True))
+#print(followLine(0.5, 2.9, 25, 40, ls))
 
