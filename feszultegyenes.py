@@ -1,7 +1,17 @@
 from ev3dev2.sensor.lego import GyroSensor, ColorSensor
 from ev3dev2.motor import LargeMotor, MoveTank, MoveSteering
 from time import time, sleep
+from ev3dev2.power import PowerSupply
 #? Mindent beimportál ami kell, viszont semmi mást mert lassabb lenne
+
+battery = PowerSupply()
+
+print(str(battery.measured_voltage))
+print(str(battery.max_voltage))
+
+feszultsegValtozo = ((battery.measured_voltage) / (battery.max_voltage)) * 8
+
+print(str(feszultsegValtozo))
 
 ballMotorKimenet = "outB"
 jobbMotorKimenet = "outC"
@@ -56,19 +66,28 @@ def raall(KP, maxIdo, maxSebesseg, minimumFeny):
         #* Ha túlment az időkorláton akkor is leállítja a programot, mivel ennyi idő után, már lehet hogy túl fog korrigállni
         
 
-def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAll = False, korigal = False, motorLe = False, lassuljon = True, gyorsuljon = True):
+def egyenes(fordulatSzam, maximumSebesseg, irany, erzekenyseg, minimumSebesseg, vonalonAll = False, korigal = False, motorLe = False, lassuljon = True, gyorsuljon = True):
     gyorsulas = fordulatSzam * 0.5
     lassulas = fordulatSzam * 0.6
+
+    KP = erzekenyseg
+
+    fordulatSzam /= (feszultsegValtozo * 1.37)
+    KP *= feszultsegValtozo
+
+    if(maximumSebesseg < 0):   
+        minimumSebesseg = minimumSebesseg * -1
+        KP *= 0.1
     #? Kiszámollja, hogy meddig kell gyorsulnia, és mitől fogva kell lassulnia,
 
     pontos = 0
     osszesMeres = 0
     #? Ezekkel majd később meg lehet nézni az egyenesen menés pontosságát
 
-    if(gyorsulas > 1.5):
-        gyorsulas = 1.5
-    if(lassulas > 1.5):
-        lassulas = 1.5
+    if(gyorsulas > 2):
+        gyorsulas = 2
+    if(lassulas > 2):
+        lassulas = 2
     #* Ne gyorsuljon túl sokáig
 
     alapFordulatszam = fordulatok()
@@ -78,8 +97,7 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAl
     deltaIdo = time()
     #? Lementi az egyenesen menés kezdetét
 
-    if(maximumSebesseg < 0):   
-        minimumSebesseg = minimumSebesseg * -1
+
     #? Ne kelljen a programozónak mindkét értéket átírnia negatív előjelűre, mivel az kimondhatattlanul megeröltető
 
     while abs(fordulatok() - alapFordulatszam) <= fordulatSzam:
@@ -114,6 +132,11 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAl
         if(abs(sebesseg) > abs(maximumSebesseg)): sebesseg = (abs(sebesseg) / sebesseg) * abs(maximumSebesseg)
         #* Ne tudjon véletlenül sem a maximum sebességnél gyorsabban menni
 
+        sebessegValtozo = (sebesseg / maximumSebesseg) * 5.5
+        if(sebessegValtozo >= 1):
+            sebessegValtozo = 1
+
+        KP = (sebessegValtozo * erzekenyseg)
         szog = ((gs.angle) - irany) * KP
         #~     gyro célérték     jelenlegi gyro érték * érzékenység
 
@@ -145,5 +168,5 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAl
         #print("Kész az egyenesen menés")
         print("Kész az egyenesen menés "+ str(round(float(time() - deltaIdo),2)) +" mp alatt"+", pontosság: " + str(int(pontos/osszesMeres * 100)) + "%")
         return
-egyenes(5, 60, int(gs.angle), 0.8, 10)
-egyenes(5, -60, int(gs.angle), 0.65, 10)
+egyenes(5, 70, int(gs.angle), 1.1, 10)
+egyenes(5, -70, int(gs.angle), 1.4, 10)
