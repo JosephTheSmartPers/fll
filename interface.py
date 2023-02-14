@@ -8,7 +8,9 @@ from futas import *
 from os import system
 #? Minden szükséges modul beimportálása
 
-system('echo maker | sudo ../loadkeys nemfll/up-ctrlc.kmap')
+system("chmod +x loadCtrlC.sh")
+system("sh ../nemfll/loadCtrlC.sh")
+
 hangszoro = Sound()
 konzol = Console()
 konzol.set_font(font='Lat15-Terminus32x16', reset_console=False)
