@@ -114,25 +114,24 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAl
         if(abs(sebesseg) > abs(maximumSebesseg)): sebesseg = (abs(sebesseg) / sebesseg) * abs(maximumSebesseg)
         #* Ne tudjon véletlenül sem a maximum sebességnél gyorsabban menni
 
-        szog = ((gs.angle) - irany) * KP
-        #~     gyro célérték     jelenlegi gyro érték * érzékenység
+        if(abs(gs.angle - irany) < 1):
+            szog = ((gs.angle) - irany) * KP
+            #~     gyro célérték     jelenlegi gyro érték * érzékenység
 
-        if(maximumSebesseg < 0):
-            szog = szog * -1
-        #* Ne forduljon meg a robot hátra menésnél
+            if(maximumSebesseg < 0):
+                szog = szog * -1
+            #* Ne forduljon meg a robot hátra menésnél
 
-        if(abs(szog) > 100): szog = (abs(szog) / szog) * 100
-        #* Ne tudjon a maximumnál nagyobb értékkel fordulni
+            if(abs(szog) > 100): szog = (abs(szog) / szog) * 100
+            #* Ne tudjon a maximumnál nagyobb értékkel fordulni
 
-        if(gs.angle == irany):
-            pontos += 1
-        osszesMeres += 1
-        #* Pontosságot számolja
+            """if(gs.angle == irany):
+                pontos += 1
+            osszesMeres += 1"""
+            #* Pontosságot számolja
 
-        szogMozgas.on(szog, sebesseg)
-        #* Elindítja a motort a kiszámolt sebességel és szögben.
-
-    
+            szogMozgas.on(szog, sebesseg)
+            #* Elindítja a motort a kiszámolt sebességel és szögben.
 
     if(motorLe != False):
         tankMozgas.on(motorLe, motorLe)
@@ -140,10 +139,10 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAl
         tankMozgas.stop(None, False)
     #* Ha így bekapcsolva marad a 
 
-    if(osszesMeres != 0):
+"""    if(osszesMeres != 0):
     #* Ha nem állt le azonnal a program írjon statisztikát
         #print("Kész az egyenesen menés")
         print("Kész az egyenesen menés "+ str(round(float(time() - deltaIdo),2)) +" mp alatt"+", pontosság: " + str(int(pontos/osszesMeres * 100)) + "%")
-        return
-egyenes(5, 60, int(gs.angle), 0.8, 10)
-egyenes(5, -60, int(gs.angle), 0.65, 10)
+        return"""
+#egyenes(5, 80, 0, 0.65, 10)
+#egyenes(5, -80, 0, 0.65, 1)

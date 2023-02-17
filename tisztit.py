@@ -5,8 +5,6 @@ from ev3dev2.button import Button
 gomb = Button()
 #? Szükséges dolgok beimportálása
 
-yhand = MediumMotor("outD")
-xhand = MediumMotor("outA")
 gs = GyroSensor("in2")
 m = MoveTank(OUTPUT_B, OUTPUT_C)
 #? Minden motor és szenzor inicializálása

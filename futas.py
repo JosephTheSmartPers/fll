@@ -1,6 +1,13 @@
 from ev3dev2.sensor.lego import ColorSensor, GyroSensor
 from ev3dev2.motor import LargeMotor, MediumMotor, MoveTank, MoveSteering
 from ev3dev2.power import PowerSupply
+#? Motorok és szenzorok importálása
+
+from vonalKovet import *
+from fordul import *
+from egyenes import *
+from visszaallit import *
+#? Eljárások importálása
 
 ballMotor = LargeMotor("outB")
 jobbMotor = LargeMotor("outC")
@@ -17,20 +24,17 @@ ballSzenzor.MODE_COL_REFLECT = "COL-REFLECT"
 jobbSzenzor.MODE_COL_REFLECT = "COL-REFLECT"
 gs.MODE_GYRO_ANG = 'GYRO-ANG'
 
-from vonalKovet import *
-from fordul import *
-from egyenes import *
-from visszaallit import *
-
-battery = PowerSupply()
-feszultsegValtozo = (battery.measured_voltage - battery.min_voltage) / (battery.max_voltage - battery.min_voltage)
-
-print("Az akumulátor " + str(round(float(feszultsegValtozo * -100), 2)) + "%" + "-on van")
 
 """
 reset(yhand, 2.5)
 reset(xhand, 1.1)
 """
+
+battery = PowerSupply()
+feszultsegValtozo = (battery.measured_voltage - battery.min_voltage) / (battery.max_voltage - battery.min_voltage)
+print("Az akumulátor " + str(round(float(feszultsegValtozo * -100), 2)) + "%" + "-on van")
+#) Kiírja az akumulátor töltöttségét
+
 #! Visszaállítja a alap pozicóba a karokat, kaparásveszély
 
 def futas1():
@@ -114,24 +118,31 @@ def futas2():
     #) Hátramegy és reseteli a kezet
 
 def futas3(): 
-    egyenes(7.6, 45, int(gs.angle)+0.3, 1, 20)
-    fordul(-58, 20, 0.7, 1)
-    egyenes(2.1, 25, int(gs.angle), 1, 20)
-    #) a három kapszula összegyűjtése
 
-    yKez.on_for_rotations(40, 1.6)
-    fordul(40, 10, 0.7, 1)
-    egyenes(0.12, -30, int(gs.angle), 1, 20)
+    gs.reset()
+    yKez.on_for_rotations(40, 0.8)
+    egyenes(5.25, 70, -3.1, 0.6, 20, motorLe=20)
+    egyenes(2.45, 70, 20, 0.2, 20)
+    fordul(-15, 20, 0.3, 0.6, relativ=False, idotullepes=1.4)
+    egyenes(0.5, 45, -10, 0.2, 10)
+    fordul(-65, 20, 0.4, 1, relativ=False)
+    egyenes(0.5, 25, -65, 0.2, 25, motorLe=50)
+    egyenes(0.5, 50, -50, 0.6, 50, motorLe=30)
+    egyenes(0.25, 45, -55, 0.6, 30, motorLe=20)
+    egyenes(0.35, 25, -50, 0.6, 20)
+    #) a h  rom kapszula   sszegy  jt  se
+
+    yKez.on_for_rotations(40, 0.8, True, False)
+    fordul(40, 10, 0.7, 0.6, idotullepes=1.5)
     fordul(-115, 20, 0.7, 1)
-    #) a kéz  behajtása
-
-    egyenes(0.8, -80, int(gs.angle)-20, 1, 20)
+    egyenes(1.5, -70, -180, 0.6, 70)
     sleep(0.05)
     gs.reset()
     sleep(0.05)
-    #) falazás megvan
 
-    egyenes(3.5, 30, gs.angle+19, 0.8, 20) #!szög
+    egyenes(2.5, 70, 30, 0.8, 20, motorLe=30) #!szög
+    egyenes(0.3, 30, 10, 0.8, 20, motorLe=30)
+    egyenes(2.5, 50, +30, 0.8, 30)
     egyenes(1, 30, 70, 0.5, 20)
     #) három kapszula körbe helyezése
 
@@ -274,7 +285,7 @@ def futas5():
     #print("Kész az 5. futás " + str(round(float(time() - startTime), 2)) + "mp alatt")
 
 
-
+futas3()
 
 
 """gs.reset()

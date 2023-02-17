@@ -72,7 +72,10 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, erzekenyseg, minimumSebesseg, 
 
     KP = erzekenyseg
 
-    fordulatSzam /= (feszultsegValtozo * 1.37)
+    szam = (feszultsegValtozo * 1.37)
+    if(szam > 1): szam = 1
+
+#    fordulatSzam *= szam
     KP *= feszultsegValtozo
 
     if(maximumSebesseg < 0):   
@@ -168,5 +171,5 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, erzekenyseg, minimumSebesseg, 
         #print("Kész az egyenesen menés")
         print("Kész az egyenesen menés "+ str(round(float(time() - deltaIdo),2)) +" mp alatt"+", pontosság: " + str(int(pontos/osszesMeres * 100)) + "%")
         return
-egyenes(5, 70, int(gs.angle), 1.1, 10)
-egyenes(5, -70, int(gs.angle), 1.4, 10)
+#egyenes(5, 70, int(gs.angle), 0.6, 10)
+#egyenes(5, -70, int(gs.angle), 1.4, 10)

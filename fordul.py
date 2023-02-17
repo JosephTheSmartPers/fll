@@ -8,7 +8,7 @@ m = MoveTank("outB", "outC")
 gs.MODE_GYRO_ANG = 'GYRO-ANG'
 #? Szenzorok és motorok inicializálása
 
-def fordul(szog, maxSebesseg, gyorsulas, koIdo, hibahatar = 2, idotullepes = 3, relativ = True, motorLe = False):
+def fordul(szog, maxSebesseg, gyorsulas, koIdo, hibahatar = 2, idotullepes = 2, relativ = True, motorLe = False):
     kezdoIdo = time.time()
     #? Fordulás kezdetének időpontja
 
@@ -61,4 +61,5 @@ def fordul(szog, maxSebesseg, gyorsulas, koIdo, hibahatar = 2, idotullepes = 3, 
     #print("Kész a fordulás, célértéktől való eltérés: " + str(round(float(abs((((gs.angle / szog) * 100) - 100))), 2)) + "%")
     
   
-#fordul(50, 70, 0.7, 2)
+#fordul(90, 50, 0.65, 2, idotullepes=1.7)
+#fordul(-90, 50, 0.65, 2, idotullepes=1.7)
