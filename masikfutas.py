@@ -7,7 +7,6 @@ from vonalKovet import *
 from fordul import *
 from egyenes import *
 from visszaallit import *
-from math import sqrt
 #? Eljárások importálása
 
 ballMotor = LargeMotor("outB")
@@ -120,99 +119,77 @@ def futas2():
 
 def futas3(): 
 
-    kezdoIdo = time()
-
-    m.reset()
     gs.reset()
-    yKez.on_for_rotations(40, 1.4)
-    egyenes(5.5, 70, -1, 0.6, 5, motorLe=30)
-    egyenes(2.45, 70, 26, 0.2, 30)
-    fordul(-15, 40, 0.3, 0.2, relativ=False, idotullepes=1)
-    egyenes(0.5, 45, -10, 0.2, 10)
-    fordul(-60, 20, 0.4, 0.3, relativ=False)
-    egyenes(0.5, 40, -60, 0.2, 25, motorLe=40)
-    egyenes(1.1, 40, -60, 0.2, 25, gyorsuljon=False)
+    yKez.on_for_rotations(40, 1.7, block=False)
+    egyenes(5.9, 70, -1.9, 0.5, 5)
+    egyenes(1.2, 40, 28, 1, 30)
+    yKez.on_for_rotations(-40, 1.4)
+    fordul(-20, 30, 0.3, 1, relativ=False)
+    egyenes(0.6, 60, -30, 1, 20, motorLe=30)
+    egyenes(0.6, 40, -61, 1, 30)
+    yKez.on_for_rotations(80, 1.2, block = False)
+    egyenes(0.7, 20, -55, 1, 20)
+    
+    fordul(-35, 50, 0.3, 1, relativ=False)
+    #* befordul, hogy a kapszula a kereten belül legyen
+    yKez.on_for_rotations(-40, 1.2, block = False)
+    fordul(-60, 50, 0.3, 1, relativ=False)
+    egyenes(1, 20, -60, 1, 20)
     #) a három kapszula összegyűjtése
 
-    yKez.on_for_rotations(40, 0.8, True, False)
-    fordul(40, 10, 0.7, 0.6, idotullepes=1.5)
-    m.on_for_rotations(-25, -25, 0.02)
-    fordul(-115, 20, 0.7, 1)
-    egyenes(0.05, 10, gs.angle, 1, 5)
+    yKez.on_for_rotations(40, 0.9, True, False)
+    fordul(35, 10, 0.7, 0.6, idotullepes=1.5)
+    fordul(-35, 10, 0.7, 0.6)
+    yKez.on_for_rotations(-40, 1.3)
+    fordul(-150, 20, 0.7, 1, relativ=False)
+    egyenes(0.15, 10, gs.angle, 1, 5)
     egyenes(1.5, -75, -180, 0.6, 70)
     sleep(0.05)
     gs.reset()
     sleep(0.05)
-    yKez.on_for_rotations(-70, 2.05, block = False)
-    egyenes(0.2, 30, 0, 1, 10, motorLe=30)
     #* a falazás megvan
-
-    
-    egyenes(1.9, 50, 30, 1.2, 30, motorLe=40)
-    #egyenes(0.9, 30, 35, 1, 20, motorLe=30)
-    
-    #egyenes(0.3, 30, 10, 0.8, 20, motorLe=30)
-    #gyenes(1, 50, 30, 0.8, 30)
-    egyenes(2, 50, 10, 0.5, 5, gyorsuljon=False)
+    """
+    egyenes(2.5, 70, 25, 0.8, 20, motorLe=30) #!szög
+    egyenes(0.3, 30, 10, 0.8, 20, motorLe=30)
+    egyenes(0.5, 50, 30, 0.8, 30)
+    egyenes(0.5, 30, 70, 0.5, 20)
     #) három kapszula körbe helyezése
 
-    yKez.on_for_rotations(40, 1.2, block = False)
-    egyenes(0.9, -30, int(gs.angle)+75, 1, 20)
-    fordul(35, 10, 0.7, 1, relativ=False)
-    yKez.on_for_rotations(-40, 1.25, block = False)
-    egyenes(2, 15, 28, 1, 10, True, False)
-    egyenes(0.8, 40, 28, 1, 20)
+    yKez.on_for_rotations(-40, 1.6)
+    egyenes(1, -30, int(gs.angle)-50, 1, 20)
+    fordul(-58, 10, 0.7, 1)
+    egyenes(2, 15, int(gs.angle), 1, 10, True, False)
     #) megáll a vonalra az erőmű felé
 
-    fordul(-1, 30, 0.7, 0.8, relativ=False)
-    egyenes(0.65, 30, 0, 1, 20)
-    yKez.on_for_rotations(100, 0.7)
-    yKez.on_for_rotations(100, 1, block=False)
-    sleep(0.05)
-    egyenes(0.4, 30, 0, 1, sqrt(2))
-
-    egyenes(0.2, 10, 0, 1, 20)
-    yKez.on_for_rotations(-40, 1.4)
-
-    egyenes(1.5, 40, 0, 1, 20)
-    yKez.on_for_rotations(-40, 0.3, block=False)
-    egyenes(0.6, -100, 0, 1, 20)
-    egyenes(1.5, 80, 75, 1, 20, motorLe=70)
-    egyenes(5, 80, 95, 1, 20, gyorsuljon=False)
-   
-    """
     fordul(-(gs.angle-10), 20, 0.3, 1)
+    yKez.on_for_rotations(40, 0.35)
     egyenes(1.3, 30, 10, 1, 20)
     fordul(-7, 20, 0.5, 1)
     #) beáll az erőműbe
 
-    yKez.on_for_rotations(40, 0.8, block=False)
+    yKez.on_for_rotations(-40, 0.35)
     egyenes(0.53, 20, 0, 1, 20)
     egyenes(0.25, -10, 0, 1, 10)
-    yKez.on_for_rotations(-100, 0.35)
     #) Kiszedi a középső cellát
-    """
-    print("Kész az 3. futás " + str(round(float(time() - kezdoIdo), 2)) + "mp alatt")
 
-    """egyenes(0.2, -10, 0, 1, 10)
+    egyenes(0.2, -10, 0, 1, 10)
     egyenes(0.25, 10, 0, 1, 10)
-    #) Hátramegy és előremegy, mert beleakadhat a pálya magába
+    #) Hátramegy és előrmegy, mert beleakadhat a pálya magába
 
     yKez.on_for_rotations(40, 1.5)
     egyenes(0.5, 20, 0, 1, 20)
     egyenes(0.25, -30, 0, 1, 20)
-    #) Kiszedte az összes celllát az erőműből"""
+    #) Kiszedte az összes celllát az erőműből
 
-    """    yKez.on_for_rotations(-40, 1.45)
+    yKez.on_for_rotations(-40, 1.45)
     egyenes(1, -40, 0, 1, 20, motorLe=-20)
     egyenes(2.2, 80, 75, 1, 20, motorLe=80)
     egyenes(4.8, 80, 90, 1, 20, gyorsuljon=False)
     
     yKez.on_for_rotations(-40, 0.1)
     #) visszamegy a másik home-ba
-    """
     m.stop()
-
+"""
 def futas4():
     gs.reset()
     startTime = time()
@@ -316,8 +293,6 @@ def futas5():
     
     #print("Kész az 5. futás " + str(round(float(time() - startTime), 2)) + "mp alatt")
 
-#xKez.on_for_rotations(-20, 0.5)
-#xKez.on_for_rotations(20, 0.5)
 
 futas3()
 

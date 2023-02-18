@@ -114,7 +114,7 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAl
         if(abs(sebesseg) > abs(maximumSebesseg)): sebesseg = (abs(sebesseg) / sebesseg) * abs(maximumSebesseg)
         #* Ne tudjon véletlenül sem a maximum sebességnél gyorsabban menni
 
-        if(abs(gs.angle - irany) < 1):
+        if(abs(gs.angle - irany) > 1):
             szog = ((gs.angle) - irany) * KP
             #~     gyro célérték     jelenlegi gyro érték * érzékenység
 
@@ -132,7 +132,8 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAl
 
             szogMozgas.on(szog, sebesseg)
             #* Elindítja a motort a kiszámolt sebességel és szögben.
-
+        else:
+            tankMozgas.on(sebesseg, sebesseg)
     if(motorLe != False):
         tankMozgas.on(motorLe, motorLe)
     else:
