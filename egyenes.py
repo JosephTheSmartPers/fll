@@ -1,7 +1,15 @@
 from ev3dev2.sensor.lego import GyroSensor, ColorSensor
 from ev3dev2.motor import LargeMotor, MoveTank, MoveSteering
 from time import time, sleep
+from ev3dev2.power import PowerSupply
 #? Mindent beimportál ami kell, viszont semmi mást mert lassabb lenne
+
+battery = PowerSupply()
+
+if(battery.measured_volts > 7.4):
+    feszultsegValtozo = 0.1 * (1-(battery.measured_volts - 7.4))
+
+feszultsegValtozo = 0
 
 ballMotorKimenet = "outB"
 jobbMotorKimenet = "outC"
@@ -60,6 +68,8 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAl
     gyorsulas = fordulatSzam * 0.5
     lassulas = fordulatSzam * 0.6
     #? Kiszámollja, hogy meddig kell gyorsulnia, és mitől fogva kell lassulnia,
+
+    fordulatSzam -= feszultsegValtozo
 
     pontos = 0
     osszesMeres = 0

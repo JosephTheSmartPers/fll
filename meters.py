@@ -6,15 +6,10 @@ from ev3dev2.power import PowerSupply
 
 battery = PowerSupply()
 
-print(str(battery.measured_voltage))
-print(str(battery.max_voltage))
-
-feszultsegValtozo = ((battery.measured_voltage) / (battery.max_voltage)) 
-
 if(battery.measured_volts > 7.4):
-    feszultsegValtozo = 0.2 * (battery.measured_volts - 7.4)
+    feszultsegValtozo = 0.1 * (1-(battery.measured_volts - 7.4))
 
-print(str(feszultsegValtozo))
+feszultsegValtozo = 0
 
 ballMotorKimenet = "outB"
 jobbMotorKimenet = "outC"
@@ -69,22 +64,13 @@ def raall(KP, maxIdo, maxSebesseg, minimumFeny):
         #* Ha túlment az időkorláton akkor is leállítja a programot, mivel ennyi idő után, már lehet hogy túl fog korrigállni
         
 
-def egyenes(fordulatSzam, maximumSebesseg, irany, erzekenyseg, minimumSebesseg, vonalonAll = False, korigal = False, motorLe = False, lassuljon = True, gyorsuljon = True):
-    gyorsulas = fordulatSzam * 0.5
+def egyenes(fordulatSzam, maximumSebesseg, irany, KP, minimumSebesseg, vonalonAll = False, korigal = False, motorLe = False, lassuljon = True, gyorsuljon = True):
+    gyorsulas = fordulatSzam * 0.5 * (abs(maximumSebesseg - minimumSebesseg) / 99)
     lassulas = fordulatSzam * 0.6
-
-    KP = erzekenyseg
-
-    szam = (feszultsegValtozo * 1.37)
-    if(szam > 1): szam = 1
-
-#    fordulatSzam *= szam
-    KP *= feszultsegValtozo
-
-    if(maximumSebesseg < 0):   
-        minimumSebesseg = minimumSebesseg * -1
-        KP *= 0.1
+    prevSteerMovement = 0
     #? Kiszámollja, hogy meddig kell gyorsulnia, és mitől fogva kell lassulnia,
+
+    fordulatSzam -= feszultsegValtozo
 
     pontos = 0
     osszesMeres = 0
@@ -103,7 +89,8 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, erzekenyseg, minimumSebesseg, 
     deltaIdo = time()
     #? Lementi az egyenesen menés kezdetét
 
-
+    if(maximumSebesseg < 0):   
+        minimumSebesseg = minimumSebesseg * -1
     #? Ne kelljen a programozónak mindkét értéket átírnia negatív előjelűre, mivel az kimondhatattlanul megeröltető
 
     while abs(fordulatok() - alapFordulatszam) <= fordulatSzam:
@@ -111,6 +98,7 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, erzekenyseg, minimumSebesseg, 
         #* Kivonjuk az eljárás kezdetén lemért fordulatszámot, így olyan mintha a kezdeti érték 0 lenne, és az abszlút érték ugyanaz előre és hátra menésnél
 
         if(vonalonAll == True):
+            print(ballSzenzor.reflected_light_intensity)
             if(ballSzenzor.reflected_light_intensity <= 7 or jobbSzenzor.reflected_light_intensity <= 7):
                 #* Ha be vonalraállás benne van a paraméterekben, és talál egy vonalat akkor megáll
                 if(korigal == True):
@@ -138,41 +126,41 @@ def egyenes(fordulatSzam, maximumSebesseg, irany, erzekenyseg, minimumSebesseg, 
         if(abs(sebesseg) > abs(maximumSebesseg)): sebesseg = (abs(sebesseg) / sebesseg) * abs(maximumSebesseg)
         #* Ne tudjon véletlenül sem a maximum sebességnél gyorsabban menni
 
-        sebessegValtozo = (sebesseg / maximumSebesseg) * 5.5
-        if(sebessegValtozo >= 1):
-            sebessegValtozo = 1
+        if(abs(gs.angle - irany) > 1):
+            szog = ((gs.angle) - irany) * KP
+            #~     gyro célérték     jelenlegi gyro érték * érzékenység
 
-        KP = (sebessegValtozo * erzekenyseg)
-        szog = ((gs.angle) - irany) * KP
-        #~     gyro célérték     jelenlegi gyro érték * érzékenység
+            if(maximumSebesseg < 0):
+                szog = szog * -1
+            #* Ne forduljon meg a robot hátra menésnél
 
-        if(maximumSebesseg < 0):
-            szog = szog * -1
-        #* Ne forduljon meg a robot hátra menésnél
+            if(abs(szog) > 100): szog = (abs(szog) / szog) * 100
+            
+            #* Ne tudjon a maximumnál nagyobb értékkel fordulni
 
-        if(abs(szog) > 100): szog = (abs(szog) / szog) * 100
-        #* Ne tudjon a maximumnál nagyobb értékkel fordulni
+            """if(gs.angle == irany):
+                pontos += 1
+            osszesMeres += 1"""
+            #* Pontosságot számolja
 
-        if(gs.angle == irany):
-            pontos += 1
-        osszesMeres += 1
-        #* Pontosságot számolja
-
-        szogMozgas.on(szog, sebesseg)
-        #* Elindítja a motort a kiszámolt sebességel és szögben.
-
-    
-
+            szogMozgas.on(szog, sebesseg)
+            #* Elindítja a motort a kiszámolt sebességel és szögben.
+            prevSteerMovement = szog
+        else:
+            szogMozgas.on(-prevSteerMovement, sebesseg)
+        
     if(motorLe != False):
         tankMozgas.on(motorLe, motorLe)
     else:
         tankMozgas.stop(None, False)
     #* Ha így bekapcsolva marad a 
 
-    if(osszesMeres != 0):
+"""    if(osszesMeres != 0):
     #* Ha nem állt le azonnal a program írjon statisztikát
         #print("Kész az egyenesen menés")
         print("Kész az egyenesen menés "+ str(round(float(time() - deltaIdo),2)) +" mp alatt"+", pontosság: " + str(int(pontos/osszesMeres * 100)) + "%")
-        return
-#egyenes(5, 70, int(gs.angle), 0.6, 10)
-#egyenes(5, -70, int(gs.angle), 1.4, 10)
+        return"""
+#egyenes(5, 80, 0, 0.65, 10)
+#egyenes(5, -80, 0, 0.65, 1)
+egyenes(100, 25, gs.angle, 0.8, 1, True)
+egyenes(100, -25, gs.angle, 0.8, 1, True)

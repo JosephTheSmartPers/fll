@@ -58,5 +58,5 @@ def vonalKovet(KP, tavolsag, maxSebesseg, joFeny, szenzor = False, egyenes = Fal
                 #? jobb motort a jobb szenzorral ball motort a ball szenzorral számolja ki
         tankMotor.stop() 
 
-##print(followLine(0.5, 2.9, 25, 40, False, True))
+print(vonalKovet(0.5, 2.9, 25, 40, False, True))
 

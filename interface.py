@@ -144,7 +144,7 @@ def elinditFutas():
         futas2Ujra = 0
     if jelenlegiFutas == "2Futas":
         if(futas2Ujra != 0 or 760 > yKez.rotations > 700):
-            yKez.on_for_rotations(40, 1.2, False, False)
+            yKez.on_for_rotations(40, 1.8, False, False)
         futas2Ujra += 1
         #* Ennél és az 5-ös futásnál az előző futás felemeli a kart, viszont mivel újrapróbálod, ezt érzékeli és felemeli
         futas2()
@@ -153,15 +153,20 @@ def elinditFutas():
         futas3()
     if jelenlegiFutas == "4Futas":
         futas4()
+        m.stop()
     if jelenlegiFutas == "5Futas":
         print(yKez.rotations)
         if(futas5Ujra != 0):
             
-            yKez.on_for_rotations(40, 1.43, False)
+            yKez.on_for_rotations(40, 1.6, False)
             sleep(1.5)
         futas5Ujra += 1
             #* Ugyanúgy mint a kettes futásnál, az előző futás felemeli a kart, viszont mivel újrapróbálod, ezt érzékeli és felemeli
         futas5()
+        m.stop()
+        yKez.reset()
+        xKez.reset()
+        m.reset()
     #* Ezek maguk a futások, és hogyha megnyomod a fölső gombot, akkor megszakítja mindegyiket, ezt "Key Remapping" segítségével érjük el
 
     if(jelenlegiFutas.replace("Futas", "").isdigit() and jelenlegiFutas.replace("Futas", "") != "5"):
@@ -198,7 +203,7 @@ while True:
         m.stop()
         m.reset()
         futE = False
-        if(jelenlegiFutas == "3Futas"): jelenlegiFutas = "4Futas"
+        #if(jelenlegiFutas == "3Futas"): jelenlegiFutas = "4Futas"
         gomb.wait_for_released("up", 2000)
         hangszoro.play_tone(frequency=2500, duration=0.50)
         #* Ha a fölső gombot valaki megnyomja akkor megáll a robot.
